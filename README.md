@@ -3,5 +3,3 @@
 # Reports
 * Proposal
 * Design Report
-
-* ER Diagram
