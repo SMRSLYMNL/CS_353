@@ -1,8 +1,8 @@
 <?php
     define('DB_SERVER', 'dijkstra.ug.bcc.bilkent.edu.tr');
-    define('DB_USERNAME', 's.suleymanli');
-    define('DB_PASSWORD', '2AuhpXTH');
-    define('DB_DATABASE', 's_suleymanli');
+    define('DB_USERNAME', 'bartu.teber');
+    define('DB_PASSWORD', '3gpT2UZ5');
+    define('DB_DATABASE', 'bartu_teber');
     $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
     if (!$connection) {
@@ -110,4 +110,3 @@
         // echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 ?>
-

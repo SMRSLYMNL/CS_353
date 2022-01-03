@@ -47,9 +47,45 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         .title {
             margin: 20px 10px;
         }
-    </style>
-</head>
-<body>
+
+            /* Add a black background color to the top navigation */
+        .topnav {
+        background-color: #900;
+        overflow: hidden;
+        }
+
+        /* Style the links inside the navigation bar */
+        .topnav a {
+        float: left;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+        }
+
+        /* Change the color of links on hover */
+        .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+        }
+
+        /* Add a color to the active/current link */
+        .topnav a.active {
+        background-color: #04AA6D;
+        color: white;
+        }
+        </style>
+    </head>
+    <body>
+
+    <div class="topnav">
+    <a href=<?php header("Location: sendpackage.php") ?> >Send A New Package</a>
+    <a href="#packagehistory">Package History</a>
+    <a href="#becourier">Be A Courier</a>
+</div>
+
+
 <div class="container">
     <div class="panel container-fluid">
         <h3 class="title" style="font-weight: bold;">Customers</h3>
