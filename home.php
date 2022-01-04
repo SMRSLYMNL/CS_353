@@ -80,7 +80,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <body>
 
     <div class="topnav">
-    <a href=<?php header("Location: sendpackage.php") ?> >Send A New Package</a>
+    <a  href="sendpackage.php ">Send A New Package</a>
     <a href="#packagehistory">Package History</a>
     <a href="#becourier">Be A Courier</a>
 </div>

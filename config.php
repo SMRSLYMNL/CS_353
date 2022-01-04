@@ -109,4 +109,92 @@
     } else {
         // echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
+
+    $takes_table = "CREATE TABLE Takes (
+        package_id int NOT NULL,
+        employee_id int NOT NULL,
+        Courier_id int NOT NULL,
+        primary key (package_id, employee_id, Courier_id),
+        foreign key (package_id) references Package,
+        foreign key (employee_id) references Employee,
+        foreign key (Courier_id) references Courier
+        )";
+        
+    if (mysqli_query($connection, $takes_table)) {
+        echo "Table Takes created successfully!\n";
+    } else {
+        // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+
+    $sends_table = "CREATE TABLE Sends (
+        package_id int NOT NULL,
+        customer_id int NOT NULL,
+        primary key (package_id, customer_id),
+        foreign key (package_id) references Package,
+        foreign key (customer_id) references Customer
+        )";
+            
+    if (mysqli_query($connection, $sends_table)) {
+        echo "Table Sends created successfully!\n";
+    } else {
+            // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    $receives_table = "CREATE TABLE Receives (
+        package_id int NOT NULL,
+        customer_id int NOT NULL,
+        primary key (package_id, customer_id),
+        foreign key (package_id) references Package,
+        foreign key (customer_id) references Customer
+    )";
+            
+    if (mysqli_query($connection, $receives_table)) {
+        echo "Table Receives created successfully!\n";
+    } else {
+            // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    $c_delivers_table = "CREATE TABLE c_delivers (
+        package_id int NOT NULL,
+        customer_id int NOT NULL,
+        primary key (package_id, customer_id),
+        foreign key (package_id) references Package,
+        foreign key (customer_id) references Customer
+        )";
+            
+    if (mysqli_query($connection, $c_delivers_table)) {
+        echo "Table c_deliver created successfully!\n";
+    } else {
+            // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    $delivers_table = "CREATE TABLE Delivers (
+        package_id int NOT NULL,
+        carrier_id int NOT NULL,
+        primary key (package_id, carrier_id),
+        foreign key (package_id) references Package,
+        foreign key (carrier_id) references Carrier
+        )";
+            
+    if (mysqli_query($connection, $delivers_table)) {
+        echo "Table delivers created successfully!\n";
+    } else {
+            // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    $branch_insert = " INSERT INTO Branch (branch_name, branch_address, branch_phone, is_central)
+    VALUES ('Ankara', 5056236451, y);";
+
+    if (mysqli_query($connection, $branch_insert)) {
+        echo "Branch is inserted successfully!\n";
+    } else {
+            // echo "Error inserting: " . mysqli_error($connection) . "!\n";
+    }
+
+    
+    
+
+
+
 ?>
