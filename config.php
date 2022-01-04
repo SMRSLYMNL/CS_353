@@ -1,8 +1,8 @@
 <?php
     define('DB_SERVER', 'dijkstra.ug.bcc.bilkent.edu.tr');
-    define('DB_USERNAME', 'bartu.teber');
-    define('DB_PASSWORD', '3gpT2UZ5');
-    define('DB_DATABASE', 'bartu_teber');
+    define('DB_USERNAME', 's.suleymanli');
+    define('DB_PASSWORD', '2AuhpXTH');
+    define('DB_DATABASE', 's_suleymanli');
     $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
     if (!$connection) {
@@ -10,13 +10,34 @@
     }
 
     function dropTables($connection) {
+        $drop_takes = "DROP TABLE IF EXISTS Takes";
+        if (mysqli_query($connection, $drop_takes)) {
+            echo "Table Takes removed successfully!\n";
+        } else {
+            echo "Error removing table Takes: " . mysqli_error($connection) . "!\n";
+        }
+        
+        $drop_report = "DROP TABLE IF EXISTS Report";
+        if (mysqli_query($connection, $drop_report)) {
+            echo "Table Report removed successfully!\n";
+        } else {
+            echo "Error removing table Report: " . mysqli_error($connection) . "!\n";
+        }
+        
+        $drop_package = "DROP TABLE IF EXISTS Package";
+        if (mysqli_query($connection, $drop_package)) {
+            echo "Table Package removed successfully!\n";
+        } else {
+            echo "Error removing table Package: " . mysqli_error($connection) . "!\n";
+        }
+        
         $drop_customer = "DROP TABLE IF EXISTS Customer";
         if (mysqli_query($connection, $drop_customer)) {
             echo "Table Customer removed successfully!\n";
         } else {
             echo "Error removing table Customer: " . mysqli_error($connection) . "!\n";
         }
-
+        
         $drop_employee = "DROP TABLE IF EXISTS Employee";
         if (mysqli_query($connection, $drop_employee)) {
             echo "Table Employee removed successfully!\n";
@@ -30,7 +51,7 @@
         } else {
             echo "Error removing table Carrier: " . mysqli_error($connection) . "!\n";
         }
-
+        
         $drop_branch = "DROP TABLE IF EXISTS Branch";
         if (mysqli_query($connection, $drop_branch)) {
             echo "Table Branch removed successfully!\n";
@@ -39,11 +60,11 @@
         }
     }
       
-    // dropTables($connection);
+    dropTables($connection);
     
     // sql to create customer table
     $customer_table = "CREATE TABLE Customer (
-        customer_id INT(6) UNSIGNED NOT NULL  AUTO_INCREMENT,
+        customer_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
         customer_username VARCHAR(15) NOT NULL,
         customer_password VARCHAR(255) NOT NULL,
         customer_name VARCHAR(30) NOT NULL,
@@ -60,7 +81,7 @@
 
     // sql to create branch table
     $branch_table = "CREATE TABLE Branch (
-        branch_id INT(6) UNSIGNED NOT NULL  AUTO_INCREMENT,
+        branch_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
         branch_name VARCHAR(30) NOT NULL,
         branch_address VARCHAR(30) NOT NULL,
         branch_phone VARCHAR(12) NOT NULL,
@@ -76,7 +97,7 @@
 
     // sql to create employee table
     $employee_table = "CREATE TABLE Employee (
-        employee_id INT(6) UNSIGNED NOT NULL  AUTO_INCREMENT,
+        employee_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
         employee_username VARCHAR(15) NOT NULL,
         employee_password VARCHAR(255) NOT NULL,
         employee_name VARCHAR(30) NOT NULL,
@@ -94,7 +115,7 @@
 
     // sql to create carrier table
     $carrier_table = "CREATE TABLE Carrier (
-        carrier_id INT(6) UNSIGNED NOT NULL  AUTO_INCREMENT,
+        carrier_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
         carrier_username VARCHAR(15) NOT NULL,
         carrier_password VARCHAR(255) NOT NULL,
         carrier_name VARCHAR(30) NOT NULL,
@@ -110,15 +131,59 @@
         // echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 
+    // sql to create package table
+    $package_table = "CREATE TABLE Package (
+        package_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+        package_description VARCHAR(30) NOT NULL,
+        submission_type VARCHAR(30) NOT NULL,
+        date_created DATE NOT NULL,
+        payment VARCHAR(15) NOT NULL,
+        status VARCHAR(15) NOT NULL,
+        report_id INT(6) UNSIGNED,
+        sender_id INT(6) UNSIGNED,
+        receiver_id INT(6) UNSIGNED,
+        customer_carrier INT(6) UNSIGNED,
+        transferred_branch INT(6) UNSIGNED,
+        PRIMARY KEY (package_id),
+        FOREIGN KEY (sender_id) REFERENCES Customer(customer_id),
+        FOREIGN KEY (receiver_id) REFERENCES Customer(customer_id),
+        FOREIGN KEY (customer_carrier) REFERENCES Customer(customer_id),
+        FOREIGN KEY (transferred_branch) REFERENCES Branch(branch_id) 
+    )";
+        
+    if (mysqli_query($connection, $package_table)) {
+        echo "Table Package created successfully!\n";
+    } else {
+        // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    // sql to create package table
+    $report_table = "CREATE TABLE Report (
+        report_id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+        package_id INT(6) UNSIGNED NOT NULL,
+        report_date DATE NOT NULL,
+        result VARCHAR(15) NOT NULL,
+        content VARCHAR(30) NOT NULL,
+        PRIMARY KEY (report_id, package_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id) ON DELETE CASCADE
+    )";
+        
+    if (mysqli_query($connection, $report_table)) {
+        echo "Table Report created successfully!\n";
+    } else {
+        // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    // sql to create package table
     $takes_table = "CREATE TABLE Takes (
-        package_id int NOT NULL,
-        employee_id int NOT NULL,
-        Courier_id int NOT NULL,
-        primary key (package_id, employee_id, Courier_id),
-        foreign key (package_id) references Package,
-        foreign key (employee_id) references Employee,
-        foreign key (Courier_id) references Courier
-        )";
+        package_id INT(6) UNSIGNED NOT NULL,
+        employee_id INT(6) UNSIGNED NOT NULL,
+        carrier_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, employee_id, carrier_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
+        FOREIGN KEY (carrier_id) REFERENCES Carrier(carrier_id)
+    )";
         
     if (mysqli_query($connection, $takes_table)) {
         echo "Table Takes created successfully!\n";
@@ -126,75 +191,94 @@
         // echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 
-
+    // sql to create package table
     $sends_table = "CREATE TABLE Sends (
-        package_id int NOT NULL,
-        customer_id int NOT NULL,
-        primary key (package_id, customer_id),
-        foreign key (package_id) references Package,
-        foreign key (customer_id) references Customer
-        )";
-            
+        package_id INT(6) UNSIGNED NOT NULL,
+        customer_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, customer_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+    )";
+        
     if (mysqli_query($connection, $sends_table)) {
         echo "Table Sends created successfully!\n";
     } else {
-            // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+        echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 
+    // sql to create package table
     $receives_table = "CREATE TABLE Receives (
-        package_id int NOT NULL,
-        customer_id int NOT NULL,
-        primary key (package_id, customer_id),
-        foreign key (package_id) references Package,
-        foreign key (customer_id) references Customer
+        package_id INT(6) UNSIGNED NOT NULL,
+        customer_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, customer_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
     )";
-            
+        
     if (mysqli_query($connection, $receives_table)) {
         echo "Table Receives created successfully!\n";
     } else {
-            // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+        echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 
-    $c_delivers_table = "CREATE TABLE c_delivers (
-        package_id int NOT NULL,
-        customer_id int NOT NULL,
-        primary key (package_id, customer_id),
-        foreign key (package_id) references Package,
-        foreign key (customer_id) references Customer
-        )";
-            
+    // sql to create package table
+    $c_delivers_table = "CREATE TABLE C_Delivers (
+        package_id INT(6) UNSIGNED NOT NULL,
+        customer_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, customer_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+    )";
+        
     if (mysqli_query($connection, $c_delivers_table)) {
-        echo "Table c_deliver created successfully!\n";
+        echo "Table CDelivers created successfully!\n";
     } else {
-            // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+        echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 
+    // sql to create package table
     $delivers_table = "CREATE TABLE Delivers (
-        package_id int NOT NULL,
-        carrier_id int NOT NULL,
-        primary key (package_id, carrier_id),
-        foreign key (package_id) references Package,
-        foreign key (carrier_id) references Carrier
-        )";
-            
+        package_id INT(6) UNSIGNED NOT NULL,
+        carrier_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, carrier_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (carrier_id) REFERENCES Carrier(carrier_id)
+    )";
+        
     if (mysqli_query($connection, $delivers_table)) {
-        echo "Table delivers created successfully!\n";
+        echo "Table Delivers created successfully!\n";
     } else {
-            // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+        echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 
-    $branch_insert = " INSERT INTO Branch (branch_name, branch_address, branch_phone, is_central)
-    VALUES ('Ankara', 5056236451, y);";
+    function insertData($connection) {
+        $sql = "INSERT INTO Customer(customer_username, customer_password, customer_name, customer_address, customer_phone)
+        VALUES ('Etophiana','etophiana12','Saidcan Alemdaroğlu','Esrtp brsyl 4/5','905555555555')";
+        if (mysqli_query($connection, $sql)) {
+            echo "Customer inserted successfully!\n";
+        } else {
+            echo "Error inserting Customer: " . mysqli_error($connection) . "!\n";
+        }
 
-    if (mysqli_query($connection, $branch_insert)) {
-        echo "Branch is inserted successfully!\n";
-    } else {
-            // echo "Error inserting: " . mysqli_error($connection) . "!\n";
+        $sql = "INSERT INTO Branch(branch_name, branch_address, branch_phone, is_central)
+        VALUES ('Etlik Branch','Esrtp brsyl 4/5','905555555555','Y')";
+        if (mysqli_query($connection, $sql)) {
+            echo "Branch inserted successfully!\n";
+        } else {
+            echo "Error inserting Branch: " . mysqli_error($connection) . "!\n";
+        }
+
+        $sql = "INSERT INTO Employee(employee_username, employee_password, employee_name, employee_phone, branch_id)
+        VALUES ('Burisable1','burisable12','Burak Kaya 1','905555555555', '1')";
+        if (mysqli_query($connection, $sql)) {
+            echo "Employee inserted successfully!\n";
+        } else {
+            echo "Error inserting Employee: " . mysqli_error($connection) . "!\n";
+        }
+
     }
-
     
-    
-
-
+    insertData($connection);
 
 ?>
+
