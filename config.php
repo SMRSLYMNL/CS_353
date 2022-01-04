@@ -60,7 +60,7 @@
         }
     }
       
-    // dropTables($connection);
+    dropTables($connection);
     
     // sql to create customer table
     $customer_table = "CREATE TABLE Customer (
@@ -154,7 +154,7 @@
     if (mysqli_query($connection, $package_table)) {
         echo "Table Package created successfully!\n";
     } else {
-        echo "Error creating table: " . mysqli_error($connection) . "!\n";
+        // echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 
     // sql to create package table
@@ -171,7 +171,7 @@
     if (mysqli_query($connection, $report_table)) {
         echo "Table Report created successfully!\n";
     } else {
-        echo "Error creating table: " . mysqli_error($connection) . "!\n";
+        // echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
 
     // sql to create package table
@@ -179,16 +179,106 @@
         package_id INT(6) UNSIGNED NOT NULL,
         employee_id INT(6) UNSIGNED NOT NULL,
         carrier_id INT(6) UNSIGNED NOT NULL,
-        primary key (package_id, employee_id, carrier_id),
-        foreign key (package_id) references Package(package_id),
-        foreign key (employee_id) references Employee(employee_id),
-        foreign key (carrier_id) references Carrier(carrier_id)
+        PRIMARY KEY (package_id, employee_id, carrier_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
+        FOREIGN KEY (carrier_id) REFERENCES Carrier(carrier_id)
     )";
         
     if (mysqli_query($connection, $takes_table)) {
         echo "Table Takes created successfully!\n";
     } else {
+        // echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    // sql to create package table
+    $sends_table = "CREATE TABLE Sends (
+        package_id INT(6) UNSIGNED NOT NULL,
+        customer_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, customer_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+    )";
+        
+    if (mysqli_query($connection, $sends_table)) {
+        echo "Table Sends created successfully!\n";
+    } else {
         echo "Error creating table: " . mysqli_error($connection) . "!\n";
     }
+
+    // sql to create package table
+    $receives_table = "CREATE TABLE Receives (
+        package_id INT(6) UNSIGNED NOT NULL,
+        customer_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, customer_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+    )";
+        
+    if (mysqli_query($connection, $receives_table)) {
+        echo "Table Receives created successfully!\n";
+    } else {
+        echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    // sql to create package table
+    $c_delivers_table = "CREATE TABLE C_Delivers (
+        package_id INT(6) UNSIGNED NOT NULL,
+        customer_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, customer_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (customer_id) REFERENCES Customer(customer_id)
+    )";
+        
+    if (mysqli_query($connection, $c_delivers_table)) {
+        echo "Table CDelivers created successfully!\n";
+    } else {
+        echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    // sql to create package table
+    $delivers_table = "CREATE TABLE Delivers (
+        package_id INT(6) UNSIGNED NOT NULL,
+        carrier_id INT(6) UNSIGNED NOT NULL,
+        PRIMARY KEY (package_id, carrier_id),
+        FOREIGN KEY (package_id) REFERENCES Package(package_id),
+        FOREIGN KEY (carrier_id) REFERENCES Carrier(carrier_id)
+    )";
+        
+    if (mysqli_query($connection, $delivers_table)) {
+        echo "Table Delivers created successfully!\n";
+    } else {
+        echo "Error creating table: " . mysqli_error($connection) . "!\n";
+    }
+
+    function insertData($connection) {
+        $sql = "INSERT INTO Customer(customer_username, customer_password, customer_name, customer_address, customer_phone)
+        VALUES ('Etophiana','etophiana12','Saidcan Alemdaroğlu','Esrtp brsyl 4/5','905555555555')";
+        if (mysqli_query($connection, $sql)) {
+            echo "Customer inserted successfully!\n";
+        } else {
+            echo "Error inserting Customer: " . mysqli_error($connection) . "!\n";
+        }
+
+        $sql = "INSERT INTO Branch(branch_name, branch_address, branch_phone, is_central)
+        VALUES ('Etlik Branch','Esrtp brsyl 4/5','905555555555','Y')";
+        if (mysqli_query($connection, $sql)) {
+            echo "Branch inserted successfully!\n";
+        } else {
+            echo "Error inserting Branch: " . mysqli_error($connection) . "!\n";
+        }
+
+        $sql = "INSERT INTO Employee(employee_username, employee_password, employee_name, employee_phone, branch_id)
+        VALUES ('Burisable1','burisable12','Burak Kaya 1','905555555555', '1')";
+        if (mysqli_query($connection, $sql)) {
+            echo "Employee inserted successfully!\n";
+        } else {
+            echo "Error inserting Employee: " . mysqli_error($connection) . "!\n";
+        }
+
+    }
+    
+    insertData($connection);
+
 ?>
 
